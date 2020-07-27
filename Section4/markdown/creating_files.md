@@ -17,7 +17,8 @@ end
 
 
 Then save and start your program using ```iex hello.ex```
-then access your function by calling the module name then . function name  ``` 
+then access your function by calling the module name then . function name.
+```elixir 
 iex> Hello.hello()
 "world"
 ```
