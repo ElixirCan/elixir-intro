@@ -33,11 +33,17 @@ iex> Create.add(1,3)
 ```
 
 ---
+- Elixir functions are defined by two things name and arity where the name is the name of the functin and arity is the number of arguemnts so our add function has an arity of 2 so we would call it add/2
 
-- In elixir there are also anonymous functions which are functions without names you can create one by typing 
+- In elixir there are anonymous functions which are functions without names you can create one by typing 
 ```fn _params -> _definition end ```
 
-- we will create our add function anonymously
+- Anonymous functions are often used when other functions take a function as a parameter
+
+
+---
+
+- with anonymous functions we can create our add function anonymously! 
 
 ```elixir
 iex> add = fn a, b -> a+b end
@@ -144,9 +150,13 @@ iex> IO.inspect(Enum.map(0..10, fn i-> Fib.fib(i) end))
 ---
 
 There is a lot to unpack in this iex command ``` IO.inspect(Enum.map(0..10, fn i-> Fib.fib(i) end))``` so lets start with the IO.inspect/1 
+
 - This function takes 1 argument and shows us our argument in the terminal
+
 - The Enum.map/2 takes two arguments a range (1..10) and a function 
+
 - inside Enum.map our second argument is an anonymous function which will simply call our fib function for the specified i value 
+
 - so all this function is doing is calling fib 10 times with the values from 1..10
 
 
