@@ -4,6 +4,6 @@
 3. Concurrency, Imutabliity
 4. Basic types & IEx: floats, ints, binaries, atoms
 5. Data structures: Maps, tuples, lists, keyword_lists
-6. Pattern Matching
-7. Functions: anonymous Functions, named functions&Modules
+6. Functions: anonymous Functions, named functions&Modules
+7. Pattern Matching 
 8. Processes, Servers, Supervisors
