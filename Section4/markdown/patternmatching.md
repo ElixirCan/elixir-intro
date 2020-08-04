@@ -79,6 +79,30 @@ iex(5)> Add.sum(2,3.0)
 
 ---
 
+# Multi-Clause Functions 
+- In elixir Pattern matching is great because you may define multiple funtions of the same name and number of arguments but will only match to the specific values that are presented to the function. lets create and example 
+
+```elixir 
+iex(1)> defmodule Test do
+...(1)> def square(n) when n |> is_integer(), do: n*n
+...(1)> def square(n) when n |> is_float(), do: n*n
+...(1)> def square(_), do: IO.puts("Please enter a float or an integer")
+...(1)> end
+
+```
+
+now lets test out our functions!
+
+```elixir 
+iex(5)> Test.square(3)
+9
+iex(6)> Test.square(1.5)
+2.25
+iex(7)> Test.square(:ok)
+Please enter a float or an integer
+```
+---
+
 lets go back to our fib.ex file and add gaurd clauses so that we only except positive integers because our function will break if we input negaitve integers
 
 ```elixir 
