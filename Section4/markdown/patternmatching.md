@@ -38,18 +38,6 @@ iex> c
 
 ---
 
-In Section 5 we used pattern matching in our list function to use our head and tail of our list 
-
-```elixir
-defp do_sum([head | tail], sum) do
-    IO.puts(sum)
-    do_sum(tail, sum + head)
-  end
-```
-This recursive function splits the list into a head and tail and then calls the function again with just the tail.
-
----
-
 A nice use of pattern matching in elixir is gaurd clauses 
 gaurd clauses allow for simpler condition then if else statements which can create layers of complexity. Here is an example of an add function which takes only integer values.
 
@@ -103,18 +91,29 @@ Please enter a float or an integer
 ```
 ---
 
-lets go back to our fib.ex file and add gaurd clauses so that we only except positive integers because our function will break if we input negaitve integers
+Now another example of pattern matching which you will use in development will be to match different messages so here we will create a function which will check the status of a tuple and if the status is ok we will display the message
 
-```elixir 
-defmodule Fib do
+we will define our module Match and then create two functions to match with our tuple
 
-  def fib(0), do: 0
-  def fib(1), do: 1
+```elixir
+iex(8)> defmodule Match do                                        
+...(8)> def msg({:ok, msg}), do: "Woah the msg is working! #{msg}"
+...(8)> def msg({_, _}), do: "Error please fix!"                  
+...(8)> end                                                       
+warning: redefining module Match (current version defined in memory)
+  iex:8
 
-  def fib(n) when n |> is_integer and n > 1, do: fib(n-1) + fib(n-2)
-end
+{:module, Match,
+ <<70, 79, 82, 49, 0, 0, 5, 244, 66, 69, 65, 77, 65, 116, 85, 56, 0, 0, 0,
+   170, 0, 0, 0, 18, 12, 69, 108, 105, 120, 105, 114, 46, 77, 97, 116, 99,
+   104, 8, 95, 95, 105, 110, 102, 111, 95, 95, 10, ...>>, {:msg, 1}}
+iex(9)> a = {:erifjos, 23}
+{:erifjos, 23}
+iex(10)> a |> Match.msg
+"Error please fix!"
+iex(11)> a = {:ok, 23}  
+{:ok, 23}
+iex(12)> a |> Match.msg
+"Woah the msg is working! 23"
 ```
-
-Now our function will only except positive integer values otherwise it will raise a no function matching error.
-
 
