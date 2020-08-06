@@ -241,6 +241,250 @@ iex> Hello.hello()
 ```
 
 ---
+
+
+# Data Structres in Elixir
+
+Different data structures in these slides will be 
+- Maps
+- Tuples
+- Lists 
+- Keyword Lists
+- Structs
+
+---
+
+# Maps
+
+- Maps in elixir are a 'key-value' data structure which are created with ```%{}``` syntax
+
+```elixir
+iex(1)> map = %{"a" => 2, "b" => 5, :n => :seven}
+%{:n => :seven, "a" => 2, "b" => 5}
+iex(2)> map["a"]
+2
+iex(3)> map[:n] 
+:seven
+```
+
+---
+
+# Tuples
+
+- Tuples are a data structure which store elements in one contiguous block of memory. Accessing tuples is very efficent because you can access them through index where the index starts from 0
+
+```elixir
+iex(1)> tuple = {:ok, :hello, :error, 13, "alright"}
+{:ok, :hello, :error, 13, "alright"}
+iex(2)> elem(tuple, 4)
+"alright"
+iex(3)> elem(tuple, 0)
+:ok
+```
+
+---
+
+# Lists
+
+- Lists can be created using ```[]``` syntax with comma seperated 
+
+- Lists in elixir are setup as a linked data structure which means to access a random element you must iterate through every element before it which makes lists easy to perform recursion on
+
+- Lists are sepearted into two parts the head and tail where the head is the first element of the list and tail is the rest of the list
+
+---
+
+```elixir
+iex(5)> list = [1, 2, 3] 
+[1, 2, 3]
+iex(6)> hd(list)
+1
+iex(7)> tl(list)
+[2, 3]
+```
+
+- This seperation allows us to perform something called tail recursion
+lets create an example using this.
+- We will create a function which will sum up the elements of numbered list
+so first create a file named ```lists.exs``` this is a script file which won't be compiled but simply ran
+
+---
+
+- Start by creating a module called Lists with a function sum(list) which will call a private sum function with the list and a starting sum of 0
+
+```elixir
+defmodule Lists do
+
+    def sum(list) do
+        do_sum(list, 0)
+    end
+
+end
+```
+
+---
+
+- next we will create 2 private functions called do_sum with 2 arguments the head and tail of a list and sum which will call itself with the tail of the list while adding the head to the sum.
+- And another private function that takes the empty list
+
+```elixir
+
+defp do_sum([head | tail], sum) do
+    do_sum(tail, head+sum)
+end
+
+defp do_sum([], sum) do
+    sum
+end
+```
+
+--- 
+
+```elixir
+
+defmodule Lists do
+
+  def sum(list) do
+    do_sum(list, 0)
+  end
+
+  defp do_sum([head | tail], sum) do
+    IO.puts(sum)
+    do_sum(tail, sum + head)
+  end
+
+  defp do_sum([], sum) do
+    sum
+  end
+end
+
+list = [1, 2, 3, 4, 5, 6, 7]
+
+output = list |> Lists.sum()
+
+IO.puts output
+
+```
+
+---
+
+now save your file and in your terminal type 
+``` elixir lists.exs ``` and it should output 
+
+```
+@user% elixir lists.exs
+0
+1
+3
+6
+10
+15
+21
+28
+```
+
+---
+
+Expanding from that same concept we could do the same with a list of words!
+
+```elixir
+def concat(list) do
+    do_concat(list, "")
+  end
+
+  def do_concat([head | tail], word) do
+    do_concat(tail, word<>" "<>head)
+  end
+
+  def do_concat([], word) do
+    word
+  end
+
+```
+
+---
+
+now we can test out our new function in iex
+
+```elixir
+iex(1)> list = ["I", "love", "learning", "elixir!"
+...(1)> ]
+["I", "love", "learning", "elixir!"]
+iex(2)> Lists.concat(list)
+"I love learning elixir! "
+
+```
+
+---
+
+# keyword lists
+
+- keyword lists are a special type of list where each element is a two element tuple with the first element of the tuple being an atom
+
+```elixir 
+
+iex> list = [{:elixir, 1}, {:phoenix, 2}]
+[elixir: 1, phoenix: 2]
+list == [elixir: 1, phoenix: 2]
+true
+```
+
+---
+
+# Structs
+
+- Structs are extensions of maps, Structs take the names of their module 
+the syntax of accessing a struct is ``` %MODULE_NAME{} ```
+
+- we could define by calling defstruct then adding elements 
+
+```elixir
+defmodule Test do
+    defstruct language: "elixir", passion: "programming"
+end
+
+iex> temp = %Test{}
+iex> temp.language
+"elixir
+```
+
+---
+
+Now lets do make a function that could have a real use case in real life lets consider if we have a list where each element in the list is a tuple of size 2 with the first entry being the first name and the second entry being the last name ex. ``` [{"David", "Random"}, {"John", "Apple"}] ```
+
+Now I want to iterate through the list and return the first name of each person lets get started. open a new file called names.exs and we are going to define a module with 2 functions 
+
+---
+
+In your file copy these in 
+
+```elixir
+defmodule Names do
+
+  def list([head | tail]) do
+    IO.puts(elem(head, 0))
+    list(tail)
+  end
+
+  def list([]), do: ""
+end
+
+a = [{"David", "Snoble"}, {"Johnny", "AppleSeed"}, {"Travis", "Hardy"}]
+
+Names.list(a)
+
+```
+
+---
+In your visual studio terminal once you are in the correct directory you can type the command elixir names.exs and it should output 
+
+David
+Johnny
+Travis
+
+or whatever names you put in your tuple
+
+---
 # Pattern Matching
 
 - One of the most important components of elixir is pattern matching 
@@ -363,4 +607,222 @@ iex(11)> a = {:ok, 23}
 iex(12)> a |> Match.msg
 "Woah the msg is working! 23"
 ```
+
+---
+
+Pattern matching is one of elixir's most powerful features and removes the need for crazy and very confusing if then blocks in your functons and allows you to simply create many smaller functions which will take advantage of the usefulness of pattern matching.
+
+---
+
+# Functions in elixir 
+
+- In Elixir there are modules which hold functions and functions which transform data.
+
+- Modules can be created by calling 
+
+```elixir
+defmodule Test do
+
+end
+```
+
+---
+
+- named functions are created inside your module with 
+``` def func_name(params) do end ```
+- lets create a test function in IEx!
+
+```elixir
+
+iex> defmodule Create do
+...>def add(a,b) do
+...>a+b
+...>end
+...>end
+{:module, Create,
+ <<70, 79, 82, 49, 0, 0, 4, 212, 66, 69, 65, 77, 65, 116, 85, 56, 0, 0, 0, 126,
+   0, 0, 0, 14, 13, 69, 108, 105, 120, 105, 114, 46, 67, 114, 101, 97, 116, 101,
+   8, 95, 95, 105, 110, 102, 111, 95, 95, ...>>, {:add, 2}}
+
+iex> Create.add(1,3)
+4
+```
+
+---
+- Elixir functions are defined by two things name and arity where the name is the name of the functin and arity is the number of arguemnts so our add function has an arity of 2 so we would call it add/2
+
+- In elixir there are anonymous functions which are functions without names you can create one by typing 
+```fn _params -> _definition end ```
+
+- Anonymous functions are often used when other functions take a function as a parameter
+
+
+---
+
+- with anonymous functions we can create our add function anonymously! 
+
+```elixir
+iex> add = fn a, b -> a+b end
+iex> add.(1,3)
+4
+```
+
+---
+
+- In elixir ``` & ``` is the capture operator which allows us to write anonymous functions
+
+```elixir
+iex> add1 = &(&1 + &2)
+iex> add1.(13,12)
+25
+```
+
+using this syntax we created an anonymous function that does the same operation!
+
+--- 
+
+# Recursive functions
+
+- Recursive functions are functions that call themselves to perform an operation until a base case is reached.
+
+- for example in our previous section we created a list fuction which uses tail recursion to sum up the numbers in a list
+
+---
+
+```elixir
+iex(1)> defmodule Recursion do
+...(1)> def dec(0), do: 0
+...(1)> def dec(n) do
+...(1)> IO.inspect(n)
+...(1)> Recursion.dec(n-1)
+...(1)> end
+...(1)> end
+{:module, Recursion,
+ <<70, 79, 82, 49, 0, 0, 5, 88, 66, 69, 65, 77, 65, 116, 85, 56, 0, 0, 0, 147,
+   0, 0, 0, 16, 16, 69, 108, 105, 120, 105, 114, 46, 82, 101, 99, 117, 114, 115,
+   105, 111, 110, 8, 95, 95, 105, 110, 102, ...>>, {:dec, 1}}
+iex(2)> Recursion.dec(5)
+5
+4
+3
+2
+1
+0
+
+```
+
+---
+
+In math there is a famous sequence called the fibonacci sequence where a number in the sequence is defined by the addition of the previous two numbers in the sequence for example position 2 in the seqeuence is 0 + 1 = 1 so position 3 is 1 + 1 = 2 and so on. 
+
+There is a very elegant way to duplicate this sequence using recursion (Warning this function is computational expensive!!)
+
+open up visual studio and create a new file called fib.ex
+
+once in the file create a module called Fib
+
+```elixir 
+defmodule fib do
+
+end
+```
+
+---
+
+In recursion it is important to have a base case so our base case will be position 0 so our first function will be called fib(0) = 0 and fib(1) = 1
+so define these two functions inside our module.
+
+```elixir
+def fib(0), do: 0
+def fib(1), do: 1
+
+```
+
+Now how will we create the nth sequence? Simple we will use recursion! lets add fib(n-1) with fib(n-2) 
+
+```elixir 
+def fib(n), do: fib(n-1) + fib(n-2)
+```
+
+save this file and run the command ```iex fib.ex``` in your terminal to compile the file
+
+---
+
+Once loaded we can call our fib function with Fib.fib()
+
+```elixir
+iex> Fib.fib(3)
+2
+iex> Fib.fib(10)
+55
+```
+
+Lets list all of our numbers in the fib sequence from 1 to 10
+
+```elixir
+iex> IO.inspect(Enum.map(0..10, fn i-> Fib.fib(i) end))
+[0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
+[0, 1, 1, 2, 3, 5, 8, 13, 21, 34, 55]
+```
+
+---
+
+There is a lot to unpack in this iex command ``` IO.inspect(Enum.map(0..10, fn i-> Fib.fib(i) end))``` so lets start with the IO.inspect/1 
+
+- This function takes 1 argument and shows us our argument in the terminal
+
+- The Enum.map/2 takes two arguments a range (1..10) and a function 
+
+- inside Enum.map our second argument is an anonymous function which will simply call our fib function for the specified i value 
+
+- so all this function is doing is calling fib 10 times with the values from 1..10
+
+
+---
+
+## Processes & Concurrency 
+- Elixir has what is called Processes which can be summed up as seperate actions which can send and recieve messsages between each other.
+- Elixir can run thousands of processes **Concurrently** which means that they run at the same time seperate from each other process
+- Elixir Processes can be acessed through their own PID(Process ID)
+
+---
+We will show an example of a process here do not worry to much about the syntax for now. We will create a process that waits until we receive a message and outputs that message.
+
+![inline](../images/concurrent.png)
+
+---
+
+###Concurrent module example
+Here we will make another example program with an elixir script that does the same thing from the terminal
+
+```elixir
+defmodule Pros do
+  def start do
+    IO.puts "{__MODULE__} at your service"
+    loop()
+  end
+  def loop do
+    receive do
+      msg -> IO.puts msg
+    end
+    loop()
+  end
+end
+
+pid = spawn(Pros, :start, [])
+send(pid, "This is my first message")
+send(pid, "This is my new message")
+```
+
+![inline left 80%](../images/elixir_pros_terminal.png)
+
+---
+
+## Immuntability
+- Immuntability does not allow values to change in memory.
+- This allows multiple processes to accsess the same value without it changing throughout your programs life span
+- In elixir we are allowed to rebind variables which means we can give through away the reference to the old variable and assign it a new value 
+
+![inline 100%](../images/immuntableiex.png)
+
 

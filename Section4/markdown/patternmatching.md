@@ -98,7 +98,7 @@ we will define our module Match and then create two functions to match with our 
 ```elixir
 iex(8)> defmodule Match do                                        
 ...(8)> def msg({:ok, msg}), do: "Woah the msg is working! #{msg}"
-...(8)> def msg({_, _}), do: "Error please fix!"                  
+...(8)> def msg({_, _}), do: "Error please fix the state!"                  
 ...(8)> end                                                       
 warning: redefining module Match (current version defined in memory)
   iex:8
@@ -110,7 +110,7 @@ warning: redefining module Match (current version defined in memory)
 iex(9)> a = {:erifjos, 23}
 {:erifjos, 23}
 iex(10)> a |> Match.msg
-"Error please fix!"
+"Error please fix the state!"
 iex(11)> a = {:ok, 23}  
 {:ok, 23}
 iex(12)> a |> Match.msg
