@@ -1,6 +1,6 @@
 defmodule Pros do
   def start do
-    IO.puts "{__MODULE__} at your service"
+    IO.puts "#{__MODULE__} at your service"
     loop()
   end
   def loop do
