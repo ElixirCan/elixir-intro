@@ -1,0 +1,210 @@
+
+# GenServer and OTP
+
+- OTP is a framework for building scalable and distributed systems. which menas that it is used to tackle solve problems over many systems
+
+- Genserver is a module which allows you to have control over your processes that can be used to keep state, exectuce code asynchronously which just means that code can be executed sepeartly from the main program.
+
+- Supervisors in elixir allow us to manage our processes and make sure that everything is running properly 
+
+---
+
+# Genserver message example 
+
+- The best way to learn about genserver is to actually just code with it and follow along so lets set up a simple genserver which will allows us to cast messages and see what has been posted
+
+- boot up vscode and make a folder called server inside create two files server.ex and supervisor.ex
+
+first we focus our server file 
+
+first import GenServer module with use GenServer and then create two functions called init and start_link
+init will return the state of our posts and start_link will start a new genserver process
+
+```elixir 
+
+defmodule Post.Server
+  use GenServer
+
+  def init(posts) do
+    {:ok, posts}
+  end
+
+  def start_link() do
+    GenServer.start_link(__MODULE__, [])
+  end
+end
+```
+
+--- 
+
+GenServer.start_link will return a tuple of ``` {:ok, pid}``` 
+
+next we will create a show function to show our list of posts
+
+```elixir
+def show(pid) do
+  GenServer.call(pid, :show)
+end
+
+def handle_call(:show, _pid, posts) do
+  {:reply, posts, posts}
+end
+```
+
+The show function makes a genserver call which calls the atom :show 
+GenServer.call is a synchronous function
+we must make a second function to handle the call of the genserver
+so we make a handle_call function which will pattern match with the :show atom and will display the posts
+
+---
+
+now in iex if we run iex server.ex 
+we can start our process by matching a tuple with 
+
+```elixir
+iex> {:ok, _nameofpid} = Post.Server.start_link()
+{:ok, #PID<0.177.0>}
+iex> Post.Server.show(pid)
+[]
+```
+Now lets add the ability to post messages. 
+
+```elixir
+def put(pid, post) do
+  GenServer.cast(pid, {:put, post})
+end
+
+def handle_cast({:put, post}, posts) do
+  {:noreply, [post | posts]}
+end
+```
+
+---
+
+The GenServer.cast function is a asychronous function and we simply append our new post to the list
+
+in iex we can now add new posts to our list by calling 
+
+```elixir
+iex> Post.Server.put(pid, "Hello")
+:ok
+iex> Post.Server.show(pid)
+["Hello"]
+```
+
+--- 
+
+Now for functionality lest create a remove function to remove posts
+
+```elixir 
+def remove(pid, post) do 
+  GenServer.cast(pid, {:remove, post})
+end
+
+def handle_cast({:remove, post}, posts) do
+  posts = Enum.reject(posts, fn x -> x == post end)
+  {:noreply, posts}
+end
+
+```
+this will remove posts from our list by using Enum.reject to remove any post that matches the post.
+
+we use the Enum.reject function to remove all posts on the form that match the post you send it
+
+---
+
+# Adding supervisors
+
+now we will create our second file supervisor.ex and our whole file will look like this 
+
+```elixir
+defmodule Post.Supervisor do
+  use Supervisor
+
+  def start_link() do
+    Supervisor.start_link(__MODULE__, [])
+  end
+
+  def init(_) do
+    children = [
+      worker(Post.Server, [])
+    ]
+
+    supervise(children, strategy: :one_for_one)
+  end
+end
+
+```
+
+---
+
+What is important in this file is that we include the supervisor module and create a start link function which calls supervisor.start_link with our module name and an empty list
+
+Our init function has one worker which is Post.Server and starts it with an empty list. then at the bottom we call supervise function with the our children and use the stategy :one_for_one which means that when one process dies we reset that process.
+
+---
+
+now to flesh this out into an application we need to create a lib directory and move supervisor.ex and server.ex into the lib folder as well as make a new file called post.ex
+
+outside of the folder create a file called mix.exs this file will compile all the neccessary files so we don't have to compile them individually.
+
+mix.exs file will look like
+
+---
+
+```elixir
+defmodule Post.Mixfile do
+  use Mix.Project
+
+  def project do
+    [
+      app: :post,
+      version: "0.1.0",
+      elixir: "~> 1.10.4",
+      start_permanent: Mix.env() == :prod,
+      deps: deps()
+    ]
+  end
+
+  def application do
+    [
+      extra_applications: [:logger],
+      mod: {Post, []}
+    ]
+  end
+
+  defp deps do
+    []
+  end
+end
+
+```
+
+---
+
+Now our post.ex file will use the application module which will start up our supervisor which shall start up our program
+
+that file will look like 
+
+```elixir
+defmodule Post do
+  use Application
+
+  def start(_type, _args) do
+    Post.Supervisor.start_link
+  end
+end
+
+```
+
+now all we have to do is be in the post directory and type ```iex -S mix```
+then we can use our functions Post.Server without worrying about the state of the process our starting up the process!
+
+---
+
+# Additional Resources for Elixir
+
+Great textbook resource 
+- Dave Thomas Programming Elixir 1.6 https://pragprog.com/titles/elixir16/programming-elixir-1-6/
+Video Course resource
+- Alchemist Camp https://alchemist.camp
