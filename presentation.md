@@ -4,6 +4,38 @@
 
 ---
 
+# Installation 
+
+#Installing elixir on Mac
+1. Install HomeBrew using 
+```
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
+``` 
+in terminal
+2. type brew install elixir
+
+3. type iex into terminal to make sure it is installed
+
+---
+
+# Installing Elixir on Windows
+
+to install elixir on windows go to the elixir website and follow the installer https://elixir-lang.org/install.html#windows
+
+---
+
+# VScode and Postgres app
+
+These are recommended tools. 
+
+to download vscode go to https://code.visualstudio.com/download and click download for whatever system you are on. 
+
+While this is going on please download postgres app from 
+https://postgresapp.com/downloads.html
+
+
+
+---
 ## Why should you learn the Elixir programming langauge?
 1. Concurrency: Can run thousands of lightweight processes which can communicate with processes on different machines.
 2. Fault Tolerant: The use of supervisors which can restart processes when they fail or die
@@ -19,37 +51,6 @@
 3. Helps break down Complex problems down step by step
 4. helps code redability: functions read like a reciepe to transform data
 
-
-
----
-#Installing elixir on Mac
-1. Install HomeBrew using 
-```
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install.sh)"
-``` 
-in terminal
-2. type brew install elixir
-3. type iex into terminal to make sure it is installed
-
----
-#Installing Elixir on Windows
-1. Install Chocolaty which allows you to install packages easily
-    -Open 'Command Prompt' and run as administrator and type the following command 
-    ```
-    @powershell -NoProfile -ExecutionPolicy Bypass -Command "iex ((New-Object System.Net.WebClient).DownloadString('https://chocolatey.org/install.ps1'))" && SET "PATH=%PATH%;%ALLUSERSPROFILE%\chocolatey\bin"
-    ```
-2. type: 'cinst elixir' to make sure it worked type iex into command line
-
----
-
-# VScode and Postgres app
-
-These are only recommended tools that we use you do not have to use these. 
-
-to download vscode go to https://code.visualstudio.com/download and click download for whatever system you are on. 
-
-While this is going on please download postgres app from 
-https://postgresapp.com/downloads.html
 
 
 ---
